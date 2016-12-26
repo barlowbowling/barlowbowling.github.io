@@ -18,7 +18,6 @@ $(function() {
       }
     });
     var average_map = {};
-    var average_of_nine_map = {};
     for(var person in scores) {
       var name_tag = $("<div>")
         .text(scores[person].name)
@@ -35,73 +34,21 @@ $(function() {
       }
       average_map[scores[person].name] = overall_scores/overall_matches;
     }
-    var show_averages = function(sort_function) {
-      var sorted_scores;
-      switch(sort_function) {
-        case "grade":
-          sorted_scores = scores.sort(function(a, b) {
-            return a.grade - b.grade;
-          });
-          break;
-        case "varsity":
-          sorted_scores = scores.sort(function(a, b) {
-            if(a.varsity && b.varsity || !a.varsity && !b.varsity)
-              return 0;
-            if(a.varsity && !b.varsity)
-              return -1;
-            if(!a.varsity && b.varsity)
-              return 1;
-          });
-          break;
-        case "average":
-          sorted_scores = scores.sort(function(a, b) {
-            return average_map[b.name] - average_map[a.name];
-          });
-          break;
-        case "average_nine":
-          sorted_scores = scores.sort(function(a, b) {
-            return average_of_nine_map[b.name] - average_of_nine_map[a.name];
-          });
-          break;
-        case "alpha":
-        default: // these labels are redundant
-          sorted_scores = scores.sort(function(a, b) {
-            var a_lname = a.name.split(" ").pop();
-            var b_lname = b.name.split(" ").pop();
-            if(a_lname.localeCompare(b_lname) == 0) {
-              return a.name.localeCompare(b.name);
-            } else {
-              return a_lname.localeCompare(b_lname);
-            }
-          });
-      }
-      var table_elem = $("<table>");
-      for(var person in scores) {
-        var person_row = $("<tr>")
-          .append($("<td>").text(scores[person].name
-            + (sort_function=="grade"?" ("+scores[person].grade+")":"")
-            + (sort_function=="varsity"&&scores[person].varsity?" (Varsity)":"")
-          ))
-          .append($("<td>").text(Math.round(average_map[scores[person].name])));
-        table_elem.append(person_row);
-      }
-      $("#main").html(table_elem);
-    };
     var show_team_details = function() {
-      var options_elem = $("<select>")
+      var options = $("<select>")
         .append($("<option>").text("Sort by name").val("alpha"))
         .append($("<option>").text("Sort by average").val("average"))
         .append($("<option>").text("Sort by varsity").val("varsity"))
-        .append($("<option>").text("Sort by grade").val("grade"))
-        .append($("<option>").text("Sort by average of last nine games").val("average_nine"));
-      var main_elem = $("<div>").attr("id", "main"); 
+        .append($("<option>").text("Sort by grade").val("grade"));
+      var sorted_scores = scores;
+      var table_elem = $("<table>");
+      for(var score in scores) {
+        var person = scores[score];
+        
+      } 
       $("#scores").empty()
-        .append(options_elem)
-        .append(main_elem);
-      show_averages("alpha");
-      options_elem.change(function() {
-        show_averages($(this).val());
-      });
+        .append(options)
+        .append(table_elem);
     };
     // handler if clicked on person's name_tab 
     $(".name_tab").click(function() {
@@ -162,7 +109,6 @@ $(function() {
       }
       var last_match_average = Math.round(last_match_total/last_match_games);
       var last_nine_average = Math.round(last_nine_total/last_nine_games);
-      average_of_nine_map[person.name] = last_nine_average;
       var data_elem = $("<div>").html(
         "Grade: " + person.grade
         + "<br>Varsity: " + (person.varsity?"true":"false")
@@ -177,8 +123,6 @@ $(function() {
         .append(data_elem)
         .append(scores_elem);
     });
-    $($(".name_tab").get().reverse()).each(function() {
-      $(this).click();
-    });
+    $(".name_tab").first().click();
   })
 });
