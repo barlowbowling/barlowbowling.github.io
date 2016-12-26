@@ -1,0 +1,16 @@
+* {
+  box-sizing: border-box;
+  font-family: "open sans", verdana, sans-serif;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+}
+#name_tabs {
+  width: 200px;
+  float: left;
+}
+#scores {
+  width: calc(100% - 200px);
+  float: left;
+} 
