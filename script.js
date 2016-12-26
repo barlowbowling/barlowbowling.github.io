@@ -3,7 +3,7 @@ $(function() {
   $.getJSON("scores.json", function(scores) {
     // create team name_tab
     var team_name_tab = $("<div>")
-      .text("Team")
+      .html("<i class='fa fa-users'></i> Team")
       .addClass("name_tab")
       .attr("id","name_tab_-1");
     $("#name_tabs").append(team_name_tab);
@@ -21,7 +21,7 @@ $(function() {
     var average_of_nine_map = {};
     for(var person in scores) {
       var name_tag = $("<div>")
-        .text(scores[person].name)
+        .html("<i class='fa fa-user'></i> " + scores[person].name)
         .addClass("name_tab")
         .attr("id","name_tab_"+person);
       $("#name_tabs").append(name_tag);
@@ -39,12 +39,12 @@ $(function() {
       var sorted_scores;
       switch(sort_function) {
         case "grade":
-          sorted_scores = scores.sort(function(a, b) {
+          sorted_scores = scores.slice().sort(function(a, b) {
             return a.grade - b.grade;
           });
           break;
         case "varsity":
-          sorted_scores = scores.sort(function(a, b) {
+          sorted_scores = scores.slice().sort(function(a, b) {
             if(a.varsity && b.varsity || !a.varsity && !b.varsity)
               return 0;
             if(a.varsity && !b.varsity)
@@ -54,18 +54,18 @@ $(function() {
           });
           break;
         case "average":
-          sorted_scores = scores.sort(function(a, b) {
+          sorted_scores = scores.slice().sort(function(a, b) {
             return average_map[b.name] - average_map[a.name];
           });
           break;
         case "average_nine":
-          sorted_scores = scores.sort(function(a, b) {
+          sorted_scores = scores.slice().sort(function(a, b) {
             return average_of_nine_map[b.name] - average_of_nine_map[a.name];
           });
           break;
         case "alpha":
         default: // these labels are redundant
-          sorted_scores = scores.sort(function(a, b) {
+          sorted_scores = scores.slice().sort(function(a, b) {
             var a_lname = a.name.split(" ").pop();
             var b_lname = b.name.split(" ").pop();
             if(a_lname.localeCompare(b_lname) == 0) {
@@ -88,17 +88,24 @@ $(function() {
       $("#main").html(table_elem);
     };
     var show_team_details = function() {
+      var name_elem = $("<h1>")
+        .text("Team")
+        .attr("id", "name");
       var options_elem = $("<select>")
+        .append($("<option>").html("Sort by average of last nine games").val("average_nine"))
         .append($("<option>").text("Sort by name").val("alpha"))
         .append($("<option>").text("Sort by average").val("average"))
         .append($("<option>").text("Sort by varsity").val("varsity"))
-        .append($("<option>").text("Sort by grade").val("grade"))
-        .append($("<option>").text("Sort by average of last nine games").val("average_nine"));
+        .append($("<option>").text("Sort by grade").val("grade"));
+      var sort_icon = $("<i>")
+        .addClass("fa fa-sort");
       var main_elem = $("<div>").attr("id", "main"); 
       $("#scores").empty()
+        .append(name_elem)
         .append(options_elem)
+        .append(sort_icon)
         .append(main_elem);
-      show_averages("alpha");
+      show_averages("average_nine");
       options_elem.change(function() {
         show_averages($(this).val());
       });
@@ -107,13 +114,18 @@ $(function() {
     $(".name_tab").click(function() {
       var id = $(this).attr("id").split("_").pop();
       // if team name_tab is clicked, show its details; otherwise continue
+      $(".name_tab").removeClass("selected");
+      $(this).addClass("selected");
       if(id == -1) {
         show_team_details();
         return;
       }
       var person = scores[id];
-      var name_elem = $("<h1>").text("Bowler: "+person.name);
+      var name_elem = $("<h1>")
+        .text(person.name)
+        .attr("id", "name");
       var scores_elem = $("<table>")
+        .addClass("scores_table")
         .append($("<tr>")
           .append($("<th>").text("Date"))
           .append($("<th>").text("Game 1"))

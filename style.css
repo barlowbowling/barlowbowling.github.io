@@ -1,16 +1,99 @@
 * {
   box-sizing: border-box;
   font-family: "open sans", verdana, sans-serif;
+  font-size: 16px;
+  color: #444444;
 }
 html, body {
   margin: 0;
   padding: 0;
 }
+select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background-color: #dddddd;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: 0.2s all;
+  padding: 5px 20px;
+  width: 100%;
+  margin-bottom: 20px;
+  border: 1px solid white;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: "";
+}
+select:hover {
+  background-color: white;
+  border-color: #444444;
+}
+.fa-sort {
+  display: block;
+  float: right;
+  position: relative;
+  top: -44px;
+  left: -20px;
+  margin-bottom: -20px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+td, th {
+  padding: 5px 20px;
+}
+tr:nth-child(odd) {
+  background-color: #dddddd;
+  border-top: 1px solid #aaaaaa;
+  border-bottom: 1px solid #aaaaaa;
+}
+#header, #name_tabs, #scores {
+  margin: 0;
+  padding: 20px;
+}
+#header {
+  margin: 0;
+  font-size: 50px;
+  font-weight: normal;
+  box-shadow: 0 0 5px 5px #dddddd;
+}
 #name_tabs {
-  width: 200px;
+  width: 300px;
   float: left;
+  padding: 15px 0;
+}
+.name_tab {
+  padding: 5px 20px;
+  transition: all 0.2s;
+  cursor: pointer;
+  border-right: 5px solid white;
+}
+.name_tab.selected {
+  background-color: #444444;
+  color: white;
+  cursor: normal;
+  border-right-color: #444444;
+}
+.name_tab:hover {
+  background-color: #dddddd;
+  border-right-color: #444444;
+}
+.name_tab.selected:hover {
+  background-color: #444444;
+  border-right-color: #444444;
+  cursor: auto;
 }
 #scores {
-  width: calc(100% - 200px);
+  width: calc(100% - 300px);
   float: left;
+  padding: 15px 20px;
 } 
+.scores_table {
+  margin-top: 20px;
+}
+.scores_table td {
+  text-align: center;
+}
