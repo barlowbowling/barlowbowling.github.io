@@ -1,4 +1,8 @@
 $(function() {
+  // fix positioning of #name_tabs
+  $(window).resize(function() {
+    $("#name_tabs").css("top", ($(window).height()-$("#name_tabs").height())/2);
+  });
   // get scores from JSON
   $.getJSON("scores.json", function(scores) {
     // create team name_tab
@@ -48,6 +52,7 @@ $(function() {
       var last_nine_average = Math.round(last_nine_total/last_nine_games);
       average_of_nine_map[scores[person].name] = last_nine_average;
     }
+    $(window).resize();
     var show_averages = function(sort_function) {
       var sorted_scores;
       switch(sort_function) {
@@ -138,6 +143,7 @@ $(function() {
         show_team_details();
         return;
       }
+      var old_scrolltop = $(window).scrollTop();
       var person = scores[id];
       var name_elem = $("<h1>")
         .text(person.name)
@@ -315,6 +321,7 @@ $(function() {
           ]
         },
         options: {
+          animation: false,
           scales: {
             yAxes: [
               {
@@ -329,6 +336,7 @@ $(function() {
           }
         }
       });
+      $(window).scrollTop(old_scrolltop);
     });
     $(".name_tab").first().click();
   })

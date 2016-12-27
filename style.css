@@ -8,6 +8,8 @@
 html, body {
   margin: 0;
   padding: 0;
+  min-width: 750px;
+  min-height: 500px;
 }
 select {
   font-family: inherit;
@@ -62,15 +64,17 @@ h1, th {
   margin: 0;
   font-size: 50px;
   font-weight: normal;
-  box-shadow: 0 0 5px 5px #eeeeee;
   text-align: center;
   user-select: none;
   cursor: default;
 }
 #name_tabs {
-  width: 300px;
-  float: left;
-  padding: 15px 0;
+  width: 250px;
+  padding: 0px;
+  position: fixed;
+  left: 25px;
+  box-shadow: 0 0 3px 3px #eeeeee;
+  background-color: white;
 }
 .name_tab {
   padding: 5px 20px;
@@ -95,7 +99,7 @@ h1, th {
 }
 #scores {
   width: calc(100% - 300px);
-  float: left;
+  float: right;
   padding: 15px 20px;
 } 
 .scores_table {
