@@ -76,11 +76,11 @@ $(function() {
           });
       }
       var table_elem = $("<table>");
-      for(var person in scores) {
+      for(var person in sorted_scores) {
         var person_row = $("<tr>")
-          .append($("<td>").text(scores[person].name
-            + (sort_function=="grade"?" ("+scores[person].grade+")":"")
-            + (sort_function=="varsity"&&scores[person].varsity?" (Varsity)":"")
+          .append($("<td>").text(sorted_scores[person].name
+            + (sort_function=="grade"?" ("+sorted_scores[person].grade+")":"")
+            + (sort_function=="varsity"&&sorted_scores[person].varsity?" (Varsity)":"")
           ))
           .append($("<td>").text(Math.round(average_map[scores[person].name])));
         table_elem.append(person_row);
