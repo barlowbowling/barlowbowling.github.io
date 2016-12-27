@@ -34,6 +34,19 @@ $(function() {
         }
       }
       average_map[scores[person].name] = overall_scores/overall_matches;
+      var last_nine_total = 0;
+      var last_nine_games = 0;
+      var reverse_scores = Object.keys(scores[person].scores).reverse();
+      for(var date in reverse_scores) {
+        for(var game in scores[person].scores[reverse_scores[date]]) {
+          if(last_nine_games < 9) {
+            last_nine_total += scores[person].scores[reverse_scores[date]][game];
+            last_nine_games++;
+          }
+        }
+      }
+      var last_nine_average = Math.round(last_nine_total/last_nine_games);
+      average_of_nine_map[person.name] = last_nine_average;
     }
     var show_averages = function(sort_function) {
       var sorted_scores;
@@ -135,6 +148,7 @@ $(function() {
         );
       var game_count = 0;
       var high_game = 0;
+      var match_averages = [];
       for(var date in person.scores) {
         var games = person.scores[date];
         game_count += games.length;
@@ -152,7 +166,9 @@ $(function() {
             scores_row.append($("<td>").html("&nbsp;"));
           }
         }
-        scores_row.append($("<th>").text(Math.round(match_total/games.length)));
+        var match_average = Math.round(match_total/games.length);
+        match_averages.push(match_average);
+        scores_row.append($("<th>").text(match_average));
         scores_elem.append(scores_row);
       }
       var last_match_total = 0;
@@ -184,13 +200,81 @@ $(function() {
         + "<br>Last nine game average: " + last_nine_average
         + "<br>Overall average: " + Math.round(average_map[person.name])
       );
+      var chart_elem = $("<canvas>");
       $("#scores").empty()
         .append(name_elem)
         .append(data_elem)
-        .append(scores_elem);
+        .append(scores_elem)
+        .append(chart_elem);
+      var default_dataset = {
+        fill: false,
+        lineTension: 0.1,
+        backgroundColor: "rgba(75,192,192,0.4)",
+        pointHoverRadius: 5,
+        pointBackgroundColor: "#fff",
+        pointHoverBorderColor: "rgba(220,220,220,1)",
+        pointRadius: 5,
+        pointHitRadius: 10,
+        spanGaps: true
+      };
+      var average_dataset = jQuery.extend({
+        label: "Match averages",
+        data: match_averages,
+        pointBorderWidth: 10,
+        pointHoverBorderWidth: 10,
+        borderColor: "rgba(75,192,192,1)",
+        pointHoverBackgroundColor: "rgba(75,192,192,1)",
+        pointBorderColor: "rgba(75,192,192,1)"
+      }, default_dataset);
+      var game1s_data = [];
+      for(var match in person.scores) {
+        game1s_data.push(person.scores[match][0]);
+      }
+      var game1s_dataset = jQuery.extend({
+        label: "Game 1",
+        data: game1s_data,
+        pointBorderWidth: 5,
+        pointHoverBorderWidth: 2,
+        pointHoverBackgroundColor: "rgba(142,68,173,1)",
+        pointBorderColor: "rgba(142,68,173,1)"
+      }, default_dataset);
+      var game2s_data = [];
+      for(var match in person.scores) {
+        game2s_data.push(person.scores[match][1]);
+      }
+      var game2s_dataset = jQuery.extend({
+        label: "Game 2",
+        data: game2s_data,
+        pointBorderWidth: 5,
+        pointHoverBorderWidth: 2,
+        pointHoverBackgroundColor: "rgba(211,84,0,1)",
+        pointBorderColor: "rgba(211,84,0,1)"
+      }, default_dataset);
+      var game3s_data = [];
+      for(var match in person.scores) {
+        game3s_data.push(person.scores[match][2]);
+      }
+      var game3s_dataset = jQuery.extend({
+        label: "Game 3",
+        data: game3s_data,
+        pointBorderWidth: 5,
+        pointHoverBorderWidth: 2,
+        pointHoverBackgroundColor: "rgba(39,174,96,1)",
+        pointBorderColor: "rgba(39,174,96,1)"
+      }, default_dataset);
+      var line_chart = new Chart(chart_elem, {
+        type: "line",
+        data: {
+          labels: Object.keys(person.scores),
+          datasets: [
+            average_dataset,
+            game1s_dataset,
+            game2s_dataset,
+            game3s_dataset
+          ]
+        }
+      });
     });
-    $($(".name_tab").get().reverse()).each(function() {
-      $(this).click();
-    });
+    $(".name_tab").first().click();
   })
 });
