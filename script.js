@@ -195,15 +195,6 @@ $(function() {
       }
       var last_match_average = Math.round(last_match_total/last_match_games);
       var last_nine_average = average_of_nine_map[person.name];
-      var data_elem = $("<div>").html(
-        "Grade: " + person.grade
-        + "<br>Varsity: " + (person.varsity?"true":"false")
-        + "<br>Number of games: " + game_count
-        + "<br>High game: " + high_game
-        + "<br>Last match average: " + last_match_average
-        + "<br>Last nine game average: " + last_nine_average
-        + "<br>Overall average: " + Math.round(average_map[person.name])
-      );
       var x_total = 0;
       var y_total = 0;
       for(var value in match_averages) {
@@ -224,6 +215,17 @@ $(function() {
       for(var datapoint in Object.keys(person.scores)) {
         best_fit_data.push(b_intercept + m_slope * datapoint);
       }
+      var data_elem = $("<div>").html(
+        "Grade: " + person.grade
+        + "<br>Varsity: " + (person.varsity?"true":"false")
+        + "<br>Number of games: " + game_count
+        + "<br>High game: " + high_game
+        + "<br>Last match average: " + last_match_average
+        + "<br>Last nine game average: " + last_nine_average
+        + "<br>Overall average: " + Math.round(average_map[person.name])
+        + "<br>Average improvement per week: " + (Math.round(m_slope) || 0)
+        + "<br>Predicted next week average: " + (Math.round(b_intercept + m_slope* match_averages.length) || match_averages[match_averages.length-1])
+      );
       var chart_elem = $("<canvas>")
         .attr("height", "250");
       $("#scores").empty()
