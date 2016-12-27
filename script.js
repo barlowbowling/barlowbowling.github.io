@@ -46,7 +46,7 @@ $(function() {
         }
       }
       var last_nine_average = Math.round(last_nine_total/last_nine_games);
-      average_of_nine_map[person.name] = last_nine_average;
+      average_of_nine_map[scores[person].name] = last_nine_average;
     }
     var show_averages = function(sort_function) {
       var sorted_scores;
@@ -194,8 +194,7 @@ $(function() {
         }
       }
       var last_match_average = Math.round(last_match_total/last_match_games);
-      var last_nine_average = Math.round(last_nine_total/last_nine_games);
-      average_of_nine_map[person.name] = last_nine_average;
+      var last_nine_average = average_of_nine_map[person.name];
       var data_elem = $("<div>").html(
         "Grade: " + person.grade
         + "<br>Varsity: " + (person.varsity?"true":"false")
@@ -205,6 +204,26 @@ $(function() {
         + "<br>Last nine game average: " + last_nine_average
         + "<br>Overall average: " + Math.round(average_map[person.name])
       );
+      var x_total = 0;
+      var y_total = 0;
+      for(var value in match_averages) {
+        x_total += value;
+        y_total += match_averages[value];
+      }
+      var x_mean = x_total/match_averages.length;
+      var y_mean = y_total/match_averages.length;
+      var numerator = 0;
+      var denominator = 0;
+      for(var value in match_averages) {
+        numerator += (value - x_mean) * (match_averages[value] - y_mean);
+        denominator += Math.pow((value - x_mean), 2);
+      }
+      var m_slope = numerator/denominator;
+      var b_intercept = y_mean - m_slope * x_mean;
+      var best_fit_data = [];
+      for(var datapoint in Object.keys(person.scores)) {
+        best_fit_data.push(b_intercept + m_slope * datapoint || match_averages[0]);
+      }
       var chart_elem = $("<canvas>")
         .attr("height", "250");
       $("#scores").empty()
@@ -228,6 +247,15 @@ $(function() {
         data: match_averages,
         pointBorderWidth: 10,
         pointHoverBorderWidth: 10,
+        borderColor: "rgba(75,192,192,1)",
+        pointHoverBackgroundColor: "rgba(75,192,192,1)",
+        pointBorderColor: "rgba(75,192,192,1)"
+      }, default_dataset);
+      var best_fit_dataset = jQuery.extend({
+        label: "Best fit line",
+        data: best_fit_data,
+        pointBorderWidth: 5,
+        pointHoverBorderWidth: 5,
         borderColor: "rgba(75,192,192,1)",
         pointHoverBackgroundColor: "rgba(75,192,192,1)",
         pointBorderColor: "rgba(75,192,192,1)"
@@ -274,6 +302,7 @@ $(function() {
           labels: Object.keys(person.scores),
           datasets: [
             average_dataset,
+            best_fit_dataset,
             game1s_dataset,
             game2s_dataset,
             game3s_dataset
