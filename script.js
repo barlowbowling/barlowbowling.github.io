@@ -207,7 +207,7 @@ $(function() {
       var x_total = 0;
       var y_total = 0;
       for(var value in match_averages) {
-        x_total += value;
+        x_total += parseInt(value);
         y_total += match_averages[value];
       }
       var x_mean = x_total/match_averages.length;
@@ -215,14 +215,14 @@ $(function() {
       var numerator = 0;
       var denominator = 0;
       for(var value in match_averages) {
-        numerator += (value - x_mean) * (match_averages[value] - y_mean);
-        denominator += Math.pow((value - x_mean), 2);
+        numerator += (parseInt(value) - x_mean) * (match_averages[value] - y_mean);
+        denominator += Math.pow((parseInt(value) - x_mean), 2);
       }
       var m_slope = numerator/denominator;
-      var b_intercept = y_mean - m_slope * x_mean;
+      var b_intercept = y_mean - (m_slope * x_mean);
       var best_fit_data = [];
       for(var datapoint in Object.keys(person.scores)) {
-        best_fit_data.push(b_intercept + m_slope * datapoint || match_averages[0]);
+        best_fit_data.push(b_intercept + m_slope * datapoint);
       }
       var chart_elem = $("<canvas>")
         .attr("height", "250");
@@ -238,7 +238,7 @@ $(function() {
         pointHoverRadius: 5,
         pointBackgroundColor: "#fff",
         pointHoverBorderColor: "rgba(220,220,220,1)",
-        pointRadius: 5,
+        pointRadius: 1,
         pointHitRadius: 10,
         spanGaps: true
       };
@@ -247,6 +247,7 @@ $(function() {
         data: match_averages,
         pointBorderWidth: 10,
         pointHoverBorderWidth: 10,
+        borderWidth: 10,
         borderColor: "rgba(75,192,192,1)",
         pointHoverBackgroundColor: "rgba(75,192,192,1)",
         pointBorderColor: "rgba(75,192,192,1)"
@@ -254,11 +255,11 @@ $(function() {
       var best_fit_dataset = jQuery.extend({
         label: "Best fit line",
         data: best_fit_data,
-        pointBorderWidth: 5,
-        pointHoverBorderWidth: 5,
-        borderColor: "rgba(75,192,192,1)",
-        pointHoverBackgroundColor: "rgba(75,192,192,1)",
-        pointBorderColor: "rgba(75,192,192,1)"
+        pointBorderWidth: 0,
+        pointHoverBorderWidth: 0,
+        borderColor: "rgba(192, 57, 43,1.0)",
+        pointHoverBackgroundColor: "rgba(192, 57, 43,1.0)",
+        pointBorderColor: "rgba(192, 57, 43,1.0)"
       }, default_dataset);
       var game1s_data = [];
       for(var match in person.scores) {
@@ -268,6 +269,7 @@ $(function() {
         label: "Game 1",
         data: game1s_data,
         pointBorderWidth: 5,
+        borderColor: "transparent",
         pointHoverBorderWidth: 2,
         pointHoverBackgroundColor: "rgba(142,68,173,1)",
         pointBorderColor: "rgba(142,68,173,1)"
@@ -280,6 +282,7 @@ $(function() {
         label: "Game 2",
         data: game2s_data,
         pointBorderWidth: 5,
+        borderColor: "transparent",
         pointHoverBorderWidth: 2,
         pointHoverBackgroundColor: "rgba(211,84,0,1)",
         pointBorderColor: "rgba(211,84,0,1)"
@@ -292,6 +295,7 @@ $(function() {
         label: "Game 3",
         data: game3s_data,
         pointBorderWidth: 5,
+        borderColor: "transparent",
         pointHoverBorderWidth: 2,
         pointHoverBackgroundColor: "rgba(39,174,96,1)",
         pointBorderColor: "rgba(39,174,96,1)"
