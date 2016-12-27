@@ -13,7 +13,7 @@ select {
   font-family: inherit;
   font-size: inherit;
   color: inherit;
-  background-color: #dddddd;
+  background-color: #eeeeee;
   border: none;
   outline: none;
   cursor: pointer;
@@ -47,7 +47,7 @@ td, th {
   padding: 5px 20px;
 }
 tr:nth-child(odd) {
-  background-color: #dddddd;
+  background-color: #eeeeee;
   border-top: 1px solid #aaaaaa;
   border-bottom: 1px solid #aaaaaa;
 }
@@ -62,7 +62,7 @@ h1, th {
   margin: 0;
   font-size: 50px;
   font-weight: normal;
-  box-shadow: 0 0 5px 5px #dddddd;
+  box-shadow: 0 0 5px 5px #eeeeee;
   text-align: center;
   user-select: none;
   cursor: default;
@@ -85,7 +85,7 @@ h1, th {
   border-right-color: #444444;
 }
 .name_tab:hover {
-  background-color: #dddddd;
+  background-color: #eeeeee;
   border-right-color: #444444;
 }
 .name_tab.selected:hover {
@@ -104,4 +104,7 @@ h1, th {
 }
 .scores_table td {
   text-align: center;
+}
+#averages_table th {
+  text-align: left;
 }

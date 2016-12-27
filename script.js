@@ -88,7 +88,12 @@ $(function() {
             }
           });
       }
-      var table_elem = $("<table>");
+      var table_elem = $("<table>")
+        .attr("id", "averages_table")
+        .append($("<tr>")
+          .append($("<th>").text("Bowler"))
+          .append($("<th>").text("Average"))
+        );
       for(var person in sorted_scores) {
         var person_row = $("<tr>")
           .append($("<td>").text(sorted_scores[person].name
@@ -200,7 +205,8 @@ $(function() {
         + "<br>Last nine game average: " + last_nine_average
         + "<br>Overall average: " + Math.round(average_map[person.name])
       );
-      var chart_elem = $("<canvas>");
+      var chart_elem = $("<canvas>")
+        .attr("height", "250");
       $("#scores").empty()
         .append(name_elem)
         .append(data_elem)
@@ -272,6 +278,20 @@ $(function() {
             game2s_dataset,
             game3s_dataset
           ]
+        },
+        options: {
+          scales: {
+            yAxes: [
+              {
+                display: true,
+                ticks: {
+                  min: 0,
+                  max: 300,
+                  stepsize: 20
+                }
+              }
+            ]
+          }
         }
       });
     });
