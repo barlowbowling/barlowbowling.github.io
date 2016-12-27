@@ -63,6 +63,9 @@ h1, th {
   font-size: 50px;
   font-weight: normal;
   box-shadow: 0 0 5px 5px #dddddd;
+  text-align: center;
+  user-select: none;
+  cursor: default;
 }
 #name_tabs {
   width: 300px;
