@@ -1,6 +1,7 @@
 * {
   box-sizing: border-box;
-  font-family: "open sans", verdana, sans-serif;
+  font-family: 'open sans';
+  font-weight: 300;
   font-size: 16px;
   color: #444444;
 }
@@ -49,6 +50,9 @@ tr:nth-child(odd) {
   background-color: #dddddd;
   border-top: 1px solid #aaaaaa;
   border-bottom: 1px solid #aaaaaa;
+}
+h1, th {
+  font-weight: 400;
 }
 #header, #name_tabs, #scores {
   margin: 0;
