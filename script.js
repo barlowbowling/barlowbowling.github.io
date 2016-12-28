@@ -12,7 +12,7 @@ $(function() {
       .attr("id","name_tab_-1");
     $("#name_tabs").append(team_name_tab);
     // create name_tabs
-    scores = scores.sort(function(a, b) {
+    scores.sort(function(a, b) {
       var a_lname = a.name.split(" ").pop();
       var b_lname = b.name.split(" ").pop();
       if(a_lname.localeCompare(b_lname) == 0) {
@@ -75,6 +75,78 @@ $(function() {
       average_of_nine_map[scores[person].name] = last_nine_average;
     }
     $(window).resize();
+    // calculating best fit line for overall and overall varsity
+    var varsity_team_total = 0;
+    var varsity_team_number = 0;
+    var varsity_matches_total = 0;
+    var team_total = 0;
+    var team_number = 0;
+    var matches_total = 0;
+    for(var player in average_of_matches_map) {
+      for(var game in average_of_matches_map[player]) {
+        var player_object = scores.find(function(a) {
+          return a.name == player;
+        });
+        if(player_object.varsity) {
+          varsity_team_number++;  
+          varsity_team_total += average_of_matches_map[player][game];
+          varsity_matches_total += parseInt(game);
+        }
+        team_number++;
+        team_total += average_of_matches_map[player][game];
+        matches_total += parseInt(game);
+      }
+    }
+    var varsity_team_mean = varsity_team_total/varsity_team_number;
+    var varsity_matches_mean = varsity_matches_total/varsity_team_number;
+    var team_mean = team_total/team_number;
+    var matches_mean = matches_total/team_number;
+    var varsity_m_numerator = 0;
+    var varsity_m_denominator = 0;
+    var m_numerator = 0;
+    var m_denominator = 0;
+    for(var player in average_of_matches_map) {
+      for(var game in average_of_matches_map[player]) {
+        var player_object = scores.find(function(a) {
+          return a.name == player;
+        });
+        if(player_object.varsity) {
+          varsity_m_numerator += (parseInt(game) - varsity_matches_mean) * (average_of_matches_map[player][game] - varsity_team_mean);
+          varsity_m_denominator += Math.pow(parseInt(game) - varsity_matches_mean, 2);
+        }
+        m_numerator += (parseInt(game) - matches_mean) * (average_of_matches_map[player][game] - team_mean);
+        m_denominator += Math.pow(parseInt(game) - matches_mean, 2);
+      }
+    }
+    var varsity_m_slope = varsity_m_numerator/varsity_m_denominator;
+    var m_slope = m_numerator/m_denominator;
+    var varsity_b_intercept = varsity_team_mean - varsity_m_slope * varsity_matches_mean;
+    var b_intercept = team_mean - m_slope * matches_mean;
+    var varsity_bestfit_data = [];
+    var bestfit_data = [];
+    for(var date in dates) {
+      varsity_bestfit_data.push(Math.round(varsity_b_intercept + date * varsity_m_slope));
+      bestfit_data.push(Math.round(b_intercept + date * m_slope));
+    }
+    var varsity_number = 0;
+    var varsity_total = 0;
+    var games_number = 0;
+    var games_total = 0;
+    for(var person in average_of_matches_map) {
+      if(average_of_matches_map[person][dates.length-1]) {
+        var person_object = scores.find(function(a) {
+          return a.name == person;
+        });
+        if(person_object.varsity) {
+          varsity_number++;
+          varsity_total += average_of_matches_map[person][dates.length-1];
+        }
+        games_number++;
+        games_total += average_of_matches_map[person][dates.length-1];
+      }
+    }
+    var varsity_average = varsity_total/varsity_number;
+    var team_average = games_total/games_number;
     var show_averages = function(sort_function) {
       var sorted_scores;
       switch(sort_function) {
@@ -137,6 +209,14 @@ $(function() {
       var name_elem = $("<h1>")
         .text("Team")
         .attr("id", "name");
+      var data_elem = $("<div>").html(
+        "Current team average: " + Math.round(team_average)
+        + "<br>Current varsity average: " + Math.round(varsity_average)
+        + "<br>Average increase per week: " + Math.round(m_slope)
+        + "<br>Average varsity increase per week: " + Math.round(varsity_m_slope)
+        + "<br>Predicted next match team average: " + Math.round(b_intercept + m_slope * dates.length)
+        + "<br>Predicted next match varsity average: " + Math.round(varsity_b_intercept + varsity_m_slope * dates.length)
+      );
       var options_elem = $("<select>")
         .append($("<option>").html("Sort by average of last nine games").val("average_nine"))
         .append($("<option>").text("Sort by name").val("alpha"))
@@ -149,6 +229,7 @@ $(function() {
       var canvas_elem = $("<canvas>").attr("height", 250);
       $("#scores").empty()
         .append(name_elem)
+        .append(data_elem)
         .append(options_elem)
         .append(sort_icon)
         .append(main_elem)
@@ -175,6 +256,32 @@ $(function() {
           data: average_of_matches_map[person]
         });
       }
+      averages_chart_datasets.push({
+        label: "Varsity best fit line",
+        fill: false,
+        lineTension: 0.2,
+        spanGaps: true,
+        pointRadius: 1,
+        pointHitRadius: 10,
+        pointBorderWidth: 10,
+        pointBorderColor: colors[color_pointer],
+        borderColor: colors[color_pointer++],
+        borderWidth: 5,
+        data: varsity_bestfit_data
+      });
+      averages_chart_datasets.push({
+        label: "Team best fit line",
+        fill: false,
+        lineTension: 0.2,
+        spanGaps: true,
+        pointRadius: 1,
+        pointHitRadius: 10,
+        pointBorderWidth: 10,
+        pointBorderColor: colors[color_pointer],
+        borderColor: colors[color_pointer++],
+        borderWidth: 5,
+        data: bestfit_data
+      });
       var averages_chart = new Chart(canvas_elem, {
         type: "line",
         data: {

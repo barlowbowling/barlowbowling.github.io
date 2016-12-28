@@ -22,12 +22,12 @@ select {
   transition: 0.2s all;
   padding: 5px 20px;
   width: 100%;
-  margin-bottom: 20px;
   border: 1px solid white;
   -webkit-appearance: none;
   -moz-appearance: none;
   text-indent: 1px;
   text-overflow: "";
+  margin-top: 20px;
 }
 select:hover {
   background-color: white;
@@ -37,7 +37,7 @@ select:hover {
   display: block;
   float: right;
   position: relative;
-  top: -44px;
+  top: -26px;
   left: -20px;
   margin-bottom: -20px;
 }
