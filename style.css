@@ -44,6 +44,7 @@ select:hover {
 table {
   width: 100%;
   border-collapse: collapse;
+  margin: 20px 0;
 }
 td, th {
   padding: 5px 20px;
@@ -102,9 +103,10 @@ h1, th {
   float: right;
   padding: 15px 20px;
 } 
-.scores_table {
-  margin-top: 20px;
-  margin-bottom: 20px;
+#empty_disclaimer {
+  font-size: smaller;
+  color: #444444; 
+  margin-top: -20px;
 }
 .scores_table td {
   text-align: center;

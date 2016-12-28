@@ -54,7 +54,7 @@ $(function() {
             match_scores += scores[person].scores[dates[date]][game];
             match_matches++;
           }
-          average_of_matches_map[scores[person].name].push(match_scores/match_matches);
+          average_of_matches_map[scores[person].name].push(Math.round(match_scores/match_matches));
         } else {
           average_of_matches_map[scores[person].name].push(null);
         }
@@ -133,6 +133,7 @@ $(function() {
       $("#main").html(table_elem);
     };
     var show_team_details = function() {
+      var old_scrolltop = $(window).scrollTop();
       var name_elem = $("<h1>")
         .text("Team")
         .attr("id", "name");
@@ -145,15 +146,58 @@ $(function() {
       var sort_icon = $("<i>")
         .addClass("fa fa-sort");
       var main_elem = $("<div>").attr("id", "main"); 
+      var canvas_elem = $("<canvas>").attr("height", 250);
       $("#scores").empty()
         .append(name_elem)
         .append(options_elem)
         .append(sort_icon)
-        .append(main_elem);
+        .append(main_elem)
+        .append(canvas_elem);
       show_averages("average_nine");
       options_elem.change(function() {
         show_averages($(this).val());
       });
+      var averages_chart_datasets = [];
+      var colors = ["#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#f1c40f", "#e67e22", "#e74c3c", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#f39c12", "#d35400", "#c0392b"];
+      var color_pointer = 0;
+      for(var person in average_of_matches_map) {
+        averages_chart_datasets.push({
+          label: person,
+          fill: false,
+          lineTension: 0.2,
+          spanGaps: true,
+          pointRadius: 1,
+          pointHitRadius: 10,
+          pointBorderWidth: 10,
+          pointBorderColor: colors[color_pointer],
+          borderColor: colors[color_pointer++],
+          borderWidth: 2,
+          data: average_of_matches_map[person]
+        });
+      }
+      var averages_chart = new Chart(canvas_elem, {
+        type: "line",
+        data: {
+          labels: dates,
+          datasets: averages_chart_datasets
+        },
+        options: {
+          animation: false,
+          scales: {
+            yAxes: [
+              {
+                display: true,
+                ticks: {
+                  min: 0,
+                  max: 300,
+                  stepsize: 20
+                }
+              }
+            ]
+          }
+        }
+      });
+      $(window).scrollTop(old_scrolltop);
     };
     // handler if clicked on person's name_tab 
     $(".name_tab").click(function() {
@@ -170,6 +214,9 @@ $(function() {
       var name_elem = $("<h1>")
         .text(person.name)
         .attr("id", "name");
+      var disclaimer_elem = $("<p>")
+        .attr("id","empty_disclaimer")
+        .html("&dagger; Empty games indicate absence or inability to play due to player restrictions.");
       var scores_elem = $("<table>")
         .addClass("scores_table")
         .append($("<tr>")
@@ -182,7 +229,15 @@ $(function() {
       var game_count = 0;
       var high_game = 0;
       var match_averages = [];
-      for(var date in person.scores) {
+      for(var match_date in dates) {
+        var date = dates[match_date];
+        if(!person.scores[date]) {
+          scores_elem.append($("<tr>")
+            .append($("<th>").text(date))
+            .append($("<td>").attr("colspan", 4))
+          );
+          continue;
+        }
         var games = person.scores[date];
         game_count += games.length;
         var scores_row = $("<tr>")
@@ -260,6 +315,7 @@ $(function() {
         .append(name_elem)
         .append(data_elem)
         .append(scores_elem)
+        .append(disclaimer_elem)
         .append(chart_elem);
       var default_dataset = {
         fill: false,
