@@ -210,10 +210,10 @@ $(function() {
         .text("Team")
         .attr("id", "name");
       var data_elem = $("<div>").html(
-        "Current team average: " + Math.round(team_average)
-        + "<br>Current varsity average: " + Math.round(varsity_average)
-        + "<br>Average increase per week: " + Math.round(m_slope)
-        + "<br>Average varsity increase per week: " + Math.round(varsity_m_slope)
+        "Last match team average: " + Math.round(team_average)
+        + "<br>Last match varsity average: " + Math.round(varsity_average)
+        + "<br>Average increase per match: " + Math.round(m_slope)
+        + "<br>Varsity average increase per match: " + Math.round(varsity_m_slope)
         + "<br>Predicted next match team average: " + Math.round(b_intercept + m_slope * dates.length)
         + "<br>Predicted next match varsity average: " + Math.round(varsity_b_intercept + varsity_m_slope * dates.length)
       );
