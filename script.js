@@ -23,6 +23,18 @@ $(function() {
     });
     var average_map = {};
     var average_of_nine_map = {};
+    var average_of_matches_map = {};
+    var dates = [];
+    for(var person in scores) {
+      for(var match in scores[person].scores) {
+        if(dates.indexOf(match) == -1) {
+          dates.push(match);
+        }
+      }
+    }
+    dates.sort(function(a, b) {
+      return Date.parse(a) - Date.parse(b);
+    });
     for(var person in scores) {
       var name_tag = $("<div>")
         .html("<i class='fa fa-user'></i> " + scores[person].name)
@@ -31,10 +43,20 @@ $(function() {
       $("#name_tabs").append(name_tag);
       var overall_scores = 0;
       var overall_matches = 0;
-      for(date in scores[person].scores) {
-        for(game in scores[person].scores[date]) {
-          overall_scores += scores[person].scores[date][game];
-          overall_matches++;
+      average_of_matches_map[scores[person].name] = [];
+      for(var date in dates) {
+        if(scores[person].scores[dates[date]]) {
+          var match_scores = 0;
+          var match_matches = 0;
+          for(var game in scores[person].scores[dates[date]]) {
+            overall_scores += scores[person].scores[dates[date]][game];
+            overall_matches++;
+            match_scores += scores[person].scores[dates[date]][game];
+            match_matches++;
+          }
+          average_of_matches_map[scores[person].name].push(match_scores/match_matches);
+        } else {
+          average_of_matches_map[scores[person].name].push(null);
         }
       }
       average_map[scores[person].name] = overall_scores/overall_matches;
@@ -105,7 +127,7 @@ $(function() {
             + (sort_function=="grade"?" ("+sorted_scores[person].grade+")":"")
             + (sort_function=="varsity"&&sorted_scores[person].varsity?" (Varsity)":"")
           ))
-          .append($("<td>").text(Math.round(average_map[scores[person].name])));
+          .append($("<td>").text(Math.round(average_map[sorted_scores[person].name])));
         table_elem.append(person_row);
       }
       $("#main").html(table_elem);
