@@ -5,9 +5,15 @@ $(function() {
   });
   // get scores from JSON
   $.getJSON("scores.json", function(scores) {
+    // create team info_tab
+    var team_name_tab = $("<div>")
+      .html("<i class='fa fa-question-circle-o fa-fw'></i> Info")
+      .addClass("name_tab")
+      .attr("id","name_tab_-2");
+    $("#name_tabs").append(team_name_tab);
     // create team name_tab
     var team_name_tab = $("<div>")
-      .html("<i class='fa fa-users'></i> Team")
+      .html("<i class='fa fa-stack fa-fw'><i class='fa fa-fw fa-circle-thin fa-stack-1x'></i><i class='fa fa-users fa-fw fa-stack-1x'></i></i> Team")
       .addClass("name_tab")
       .attr("id","name_tab_-1");
     $("#name_tabs").append(team_name_tab);
@@ -37,7 +43,7 @@ $(function() {
     });
     for(var person in scores) {
       var name_tag = $("<div>")
-        .html("<i class='fa fa-user'></i> " + scores[person].name)
+        .html("<i class='fa fa-user-circle-o fa-fw'></i> " + scores[person].name)
         .addClass("name_tab")
         .attr("id","name_tab_"+person);
       $("#name_tabs").append(name_tag);
@@ -204,11 +210,23 @@ $(function() {
       }
       $("#main").html(table_elem);
     };
+    var show_team_info = function() {
+      var name_elem = $("<h1>")
+        .text("Info");
+      var paragraph_elem_1 = $("<p>")
+        .text("Welcome to the Barlow Bowling data site! See the list below for resources.");
+      var resources_elem = $("<ul>")
+        .append($("<li>").html($("<a>").text("Nutmeg Bowl website").attr({href: "http://nutmegbowl.com",target: "_blank"})))
+        .append($("<li>").html($("<a>").text("Facebook group").attr({href: "http://facebook.com/groups/barlowbowling2017",target: "_blank"})))
+        .append($("<li>").html($("<a>").text("CIBL league standings").attr({href: "http://nutmegbowl.com/LEAGUES",target: "_blank"})));
+      $("#scores").empty()
+        .append(name_elem)
+        .append(paragraph_elem_1)
+        .append(resources_elem);
+    }
     var show_team_details = function() {
-      var old_scrolltop = $(window).scrollTop();
       var name_elem = $("<h1>")
         .text("Team")
-        .attr("id", "name");
       var data_elem = $("<div>").html(
         "Last match team average: " + Math.round(team_average)
         + "<br>Last match varsity average: " + Math.round(varsity_average)
@@ -304,23 +322,26 @@ $(function() {
           }
         }
       });
-      $(window).scrollTop(old_scrolltop);
     };
     // handler if clicked on person's name_tab 
     $(".name_tab").click(function() {
+      var old_scrolltop = $(window).scrollTop();
       var id = $(this).attr("id").split("_").pop();
       // if team name_tab is clicked, show its details; otherwise continue
       $(".name_tab").removeClass("selected");
       $(this).addClass("selected");
       if(id == -1) {
         show_team_details();
+        $(window).scrollTop(old_scrolltop);
+        return;
+      } else if(id == -2) {
+        show_team_info();
+        $(window).scrollTop(old_scrolltop);
         return;
       }
-      var old_scrolltop = $(window).scrollTop();
       var person = scores[id];
       var name_elem = $("<h1>")
-        .text(person.name)
-        .attr("id", "name");
+        .text(person.name);
       var disclaimer_elem = $("<p>")
         .attr("id","empty_disclaimer")
         .html("&dagger; Empty games indicate absence or inability to play due to player restrictions.");
@@ -523,6 +544,6 @@ $(function() {
       });
       $(window).scrollTop(old_scrolltop);
     });
-    $(".name_tab").first().click();
+    $(".name_tab").get(1).click();
   })
 });

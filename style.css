@@ -5,6 +5,17 @@
   font-size: 16px;
   color: #444444;
 }
+a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px dotted #444444;
+}
+a::after {
+  font-family: fontawesome;
+  content: " \f14c";
+  font-size: smaller;
+  vertical-align: super;
+}
 html, body {
   margin: 0;
   padding: 0;
@@ -86,8 +97,12 @@ h1, th {
 .name_tab.selected {
   background-color: #444444;
   color: white;
-  cursor: normal;
+  cursor: default;
   border-right-color: #444444;
+  font-weight: normal;
+}
+.fa {
+  color: inherit;
 }
 .name_tab:hover {
   background-color: #eeeeee;
@@ -97,6 +112,18 @@ h1, th {
   background-color: #444444;
   border-right-color: #444444;
   cursor: auto;
+}
+.fa-stack {
+  font-size: inherit !important;
+  height: 1em !important;
+  width: 1.28571429em !important;
+  line-height: 1em;
+}
+.fa-stack-1x:nth-child(1) {
+  font-size: 1.25em;
+}
+.fa-stack-1x:nth-child(2) {
+  font-size: 0.7em;
 }
 #scores {
   width: calc(100% - 300px);
