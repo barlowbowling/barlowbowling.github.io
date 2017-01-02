@@ -205,7 +205,11 @@ $(function() {
             + (sort_function=="grade"?" ("+sorted_scores[person].grade+")":"")
             + (sort_function=="varsity"&&sorted_scores[person].varsity?" (Varsity)":"")
           ))
-          .append($("<td>").text(Math.round(average_map[sorted_scores[person].name])));
+          .append($("<td>").text(
+            sort_function == "average_nine"
+              ? Math.round(average_of_nine_map[sorted_scores[person].name])
+              : Math.round(average_map[sorted_scores[person].name])
+          ));
         table_elem.append(person_row);
       }
       $("#main").html(table_elem);
@@ -244,13 +248,17 @@ $(function() {
       var sort_icon = $("<i>")
         .addClass("fa fa-sort");
       var main_elem = $("<div>").attr("id", "main"); 
+      var canvas_title_elem = $("<h1>").text("Match Averages");
       var canvas_elem = $("<canvas>").attr("height", 250);
+      var options_title_elem = $("<h1>").text("Individual Overall Averages");
       $("#scores").empty()
         .append(name_elem)
         .append(data_elem)
+        .append(options_title_elem)
         .append(options_elem)
         .append(sort_icon)
         .append(main_elem)
+        .append(canvas_title_elem)
         .append(canvas_elem);
       show_averages("average_nine");
       options_elem.change(function() {
@@ -263,13 +271,14 @@ $(function() {
         averages_chart_datasets.push({
           label: person,
           fill: false,
-          lineTension: 0.2,
+          lineTension: 0.1,
           spanGaps: true,
           pointRadius: 1,
           pointHitRadius: 10,
           pointBorderWidth: 10,
           pointBorderColor: colors[color_pointer],
           borderColor: colors[color_pointer++],
+          backgroundColor: "white",
           borderWidth: 2,
           data: average_of_matches_map[person]
         });
@@ -277,26 +286,28 @@ $(function() {
       averages_chart_datasets.push({
         label: "Varsity best fit line",
         fill: false,
-        lineTension: 0.2,
+        lineTension: 0.05,
         spanGaps: true,
-        pointRadius: 1,
+        pointRadius: 0,
         pointHitRadius: 10,
         pointBorderWidth: 10,
-        pointBorderColor: colors[color_pointer],
-        borderColor: colors[color_pointer++],
+        pointBorderColor: "transparent",
+        borderColor: "darkgrey",
+        backgroundColor: "darkgrey",
         borderWidth: 5,
         data: varsity_bestfit_data
       });
       averages_chart_datasets.push({
         label: "Team best fit line",
         fill: false,
-        lineTension: 0.2,
+        lineTension: 0.05,
         spanGaps: true,
         pointRadius: 1,
         pointHitRadius: 10,
         pointBorderWidth: 10,
-        pointBorderColor: colors[color_pointer],
-        borderColor: colors[color_pointer++],
+        pointBorderColor: "transparent",
+        borderColor: "grey",
+        backgroundColor: "grey",
         borderWidth: 5,
         data: bestfit_data
       });
