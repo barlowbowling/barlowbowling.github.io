@@ -115,5 +115,21 @@
     "scores": {
       "12/20/2016": [73, 132]
     }
+  },
+  {
+    "name": "Skylar Telesco",
+    "grade": 11,
+    "varsity": false,
+    "scores": {
+      "12/20/2016": [59, 91]
+    }
+  },
+  {
+    "name": "MJ Lynch",
+    "grade": 11,
+    "varsity": false,
+    "scores": {
+      "12/20/2016": [103, 93]
+    }
   }
 ]
