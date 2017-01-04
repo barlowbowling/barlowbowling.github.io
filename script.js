@@ -439,7 +439,7 @@ $(function() {
       }
       var data_elem = $("<div>").html(
         "Grade: " + person.grade
-        + "<br>Varsity: " + (person.varsity?"true":"false")
+        + "<br>Varsity: " + (person.varsity?"yes":"no")
         + "<br>Number of games: " + game_count
         + "<br>High game: " + high_game
         + "<br>Last match average: " + last_match_average
