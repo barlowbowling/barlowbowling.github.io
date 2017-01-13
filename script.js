@@ -89,7 +89,6 @@ $(function() {
       // var last_nine_average = Math.round(last_nine_total/last_nine_games);
       // average_of_nine_map[scores[person].name] = last_nine_average;
     }
-    console.log(weighted_average_map);
     $(window).resize();
     // calculating best fit line for overall and overall varsity
     var varsity_team_total = 0;
@@ -186,9 +185,10 @@ $(function() {
             return average_map[b.name] - average_map[a.name];
           });
           break;
-        case "average_nine":
+        case "weighted":
           sorted_scores = scores.slice().sort(function(a, b) {
-            return average_of_nine_map[b.name] - average_of_nine_map[a.name];
+            //return average_of_nine_map[b.name] - average_of_nine_map[a.name];
+            return weighted_average_map[b.name] - weighted_average_map[a.name];
           });
           break;
         case "alpha":
@@ -216,13 +216,15 @@ $(function() {
             + (sort_function=="varsity"&&sorted_scores[person].varsity?" (Varsity)":"")
           ))
           .append($("<td>").text(
-            sort_function == "average_nine"
-              ? Math.round(average_of_nine_map[sorted_scores[person].name])
+            sort_function == "weighted"
+              ? Math.round(weighted_average_map[sorted_scores[person].name])
               : Math.round(average_map[sorted_scores[person].name])
-          ));
         table_elem.append(person_row);
       }
       $("#main").html(table_elem);
+      if(sort_function == "weighted") {
+        $("#main").append($("<p>").attr("id", "empty_disclaimer").text("Every week is weighted " + weight_scalar + " times as much than the previous week."));
+      }
     };
     var show_team_info = function() {
       var name_elem = $("<h1>")
@@ -250,7 +252,7 @@ $(function() {
         + "<br>Predicted next match varsity average: " + Math.round(varsity_b_intercept + varsity_m_slope * dates.length)
       );
       var options_elem = $("<select>")
-        .append($("<option>").html("Sort by average of last nine games").val("average_nine"))
+        .append($("<option>").html("Sort by weighted average").val("weighted"))
         .append($("<option>").text("Sort by name").val("alpha"))
         .append($("<option>").text("Sort by average").val("average"))
         .append($("<option>").text("Sort by varsity").val("varsity"))
@@ -426,7 +428,8 @@ $(function() {
         }
       }
       var last_match_average = Math.round(last_match_total/last_match_games);
-      var last_nine_average = average_of_nine_map[person.name];
+      //var last_nine_average = average_of_nine_map[person.name];
+      var weighted_average = weighted_average_map[person.name];
       var x_total = 0;
       var y_total = 0;
       for(var value in match_averages) {
@@ -453,7 +456,8 @@ $(function() {
         + "<br>Number of games: " + game_count
         + "<br>High game: " + high_game
         + "<br>Last match average: " + last_match_average
-        + "<br>Last nine game average: " + last_nine_average
+        //+ "<br>Last nine game average: " + last_nine_average
+        + "<br>Weighted average: " + Math.round(weighted_average_map[person.name])
         + "<br>Overall average: " + Math.round(average_map[person.name])
         + "<br>Average improvement per week: " + (Math.round(m_slope) || 0)
         + "<br>Predicted next week average: " + (Math.round(b_intercept + m_slope* match_averages.length) || match_averages[match_averages.length-1])
