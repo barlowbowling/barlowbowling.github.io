@@ -89,6 +89,7 @@ $(function() {
       // var last_nine_average = Math.round(last_nine_total/last_nine_games);
       // average_of_nine_map[scores[person].name] = last_nine_average;
     }
+    console.log(weighted_average_map);
     $(window).resize();
     // calculating best fit line for overall and overall varsity
     var varsity_team_total = 0;
