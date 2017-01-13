@@ -28,7 +28,8 @@ $(function() {
       }
     });
     var average_map = {};
-    var average_of_nine_map = {};
+    // var average_of_nine_map = {};
+    var weighted_average_map = {};
     var average_of_matches_map = {};
     var dates = [];
     for(var person in scores) {
@@ -50,6 +51,10 @@ $(function() {
       var overall_scores = 0;
       var overall_matches = 0;
       average_of_matches_map[scores[person].name] = [];
+      var overall_weighted_score = 0;
+      var weight = 1;
+      var weight_total = 0;
+      var weight_scalar = 1.1;
       for(var date in dates) {
         if(scores[person].scores[dates[date]]) {
           var match_scores = 0;
@@ -59,6 +64,9 @@ $(function() {
             overall_matches++;
             match_scores += scores[person].scores[dates[date]][game];
             match_matches++;
+            overall_weighted_score += weight * scores[person].scores[dates[date]][game];
+            weight_total += weight;
+            weight *= weight_scalar;
           }
           average_of_matches_map[scores[person].name].push(Math.round(match_scores/match_matches));
         } else {
@@ -66,7 +74,7 @@ $(function() {
         }
       }
       average_map[scores[person].name] = overall_scores/overall_matches;
-      var last_nine_total = 0;
+      /*var last_nine_total = 0;
       var last_nine_games = 0;
       var reverse_scores = Object.keys(scores[person].scores).reverse();
       for(var date in reverse_scores) {
@@ -76,9 +84,10 @@ $(function() {
             last_nine_games++;
           }
         }
-      }
-      var last_nine_average = Math.round(last_nine_total/last_nine_games);
-      average_of_nine_map[scores[person].name] = last_nine_average;
+      }*/
+      weighted_average_map[scores[person].name] = overall_weighted_score / weight_total;
+      // var last_nine_average = Math.round(last_nine_total/last_nine_games);
+      // average_of_nine_map[scores[person].name] = last_nine_average;
     }
     $(window).resize();
     // calculating best fit line for overall and overall varsity
