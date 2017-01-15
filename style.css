@@ -3,6 +3,7 @@
   font-family: 'open sans';
   font-weight: 300;
   font-size: 16px;
+  text-align: justify;
   color: #444444;
 }
 a {
@@ -15,6 +16,15 @@ a::after {
   content: " \f14c";
   font-size: smaller;
   vertical-align: super;
+}
+h1 {
+  font-size: 2em;
+}
+h1, h3 {
+  margin: 10px 0 5px 0;
+}
+h3 {
+  font-size: 1.2em;
 }
 html, body {
   margin: 0;
@@ -38,7 +48,6 @@ select {
   -moz-appearance: none;
   text-indent: 1px;
   text-overflow: "";
-  margin-top: 20px;
 }
 select:hover {
   background-color: white;
@@ -65,8 +74,11 @@ tr:nth-child(odd) {
   border-top: 1px solid #aaaaaa;
   border-bottom: 1px solid #aaaaaa;
 }
-h1, th {
+h1, h3, th {
   font-weight: 400;
+}
+ul {
+  margin: 5px 0;
 }
 #header, #name_tabs, #scores {
   margin: 0;
@@ -79,6 +91,12 @@ h1, th {
   text-align: center;
   user-select: none;
   cursor: default;
+}
+.name_button {
+  cursor: pointer;
+}
+.name_button:hover {
+  text-decoration: underline;
 }
 #name_tabs {
   width: 250px;
@@ -128,7 +146,7 @@ h1, th {
 #scores {
   width: calc(100% - 300px);
   float: right;
-  padding: 15px 20px;
+  padding: 15px 40px 15px 20px;
 } 
 #empty_disclaimer {
   font-size: smaller;
