@@ -28,7 +28,6 @@ $(function() {
       }
     });
     var average_map = {};
-    // var average_of_nine_map = {};
     var weighted_average_map = {};
     var average_of_matches_map = {};
     var dates = [];
@@ -54,7 +53,7 @@ $(function() {
       var overall_weighted_score = 0;
       var weight = 1;
       var weight_total = 0;
-      var weight_scalar = 1.1;
+      var weight_scalar = 1.5;
       for(var date in dates) {
         if(scores[person].scores[dates[date]]) {
           var match_scores = 0;
@@ -66,28 +65,15 @@ $(function() {
             match_matches++;
             overall_weighted_score += weight * scores[person].scores[dates[date]][game];
             weight_total += weight;
-            weight *= weight_scalar;
           }
+          weight *= weight_scalar;
           average_of_matches_map[scores[person].name].push(Math.round(match_scores/match_matches));
         } else {
           average_of_matches_map[scores[person].name].push(null);
         }
       }
       average_map[scores[person].name] = overall_scores/overall_matches;
-      /*var last_nine_total = 0;
-      var last_nine_games = 0;
-      var reverse_scores = Object.keys(scores[person].scores).reverse();
-      for(var date in reverse_scores) {
-        for(var game in scores[person].scores[reverse_scores[date]]) {
-          if(last_nine_games < 9) {
-            last_nine_total += scores[person].scores[reverse_scores[date]][game];
-            last_nine_games++;
-          }
-        }
-      }*/
-      weighted_average_map[scores[person].name] = overall_weighted_score / weight_total;
-      // var last_nine_average = Math.round(last_nine_total/last_nine_games);
-      // average_of_nine_map[scores[person].name] = last_nine_average;
+            weighted_average_map[scores[person].name] = overall_weighted_score / weight_total;
     }
     $(window).resize();
     // calculating best fit line for overall and overall varsity
@@ -187,7 +173,6 @@ $(function() {
           break;
         case "weighted":
           sorted_scores = scores.slice().sort(function(a, b) {
-            //return average_of_nine_map[b.name] - average_of_nine_map[a.name];
             return weighted_average_map[b.name] - weighted_average_map[a.name];
           });
           break;
@@ -219,11 +204,12 @@ $(function() {
             sort_function == "weighted"
               ? Math.round(weighted_average_map[sorted_scores[person].name])
               : Math.round(average_map[sorted_scores[person].name])
+            ));
         table_elem.append(person_row);
       }
       $("#main").html(table_elem);
       if(sort_function == "weighted") {
-        $("#main").append($("<p>").attr("id", "empty_disclaimer").text("Every week is weighted " + weight_scalar + " times as much than the previous week."));
+        $("#main").append($("<p>").attr("id", "empty_disclaimer").html("&dagger; Each week's games are weighted " + weight_scalar + " times as much than the previous week."));
       }
     };
     var show_team_info = function() {
@@ -272,7 +258,7 @@ $(function() {
         .append(main_elem)
         .append(canvas_title_elem)
         .append(canvas_elem);
-      show_averages("average_nine");
+      show_averages("weighted");
       options_elem.change(function() {
         show_averages($(this).val());
       });
@@ -428,7 +414,6 @@ $(function() {
         }
       }
       var last_match_average = Math.round(last_match_total/last_match_games);
-      //var last_nine_average = average_of_nine_map[person.name];
       var weighted_average = weighted_average_map[person.name];
       var x_total = 0;
       var y_total = 0;
@@ -456,7 +441,6 @@ $(function() {
         + "<br>Number of games: " + game_count
         + "<br>High game: " + high_game
         + "<br>Last match average: " + last_match_average
-        //+ "<br>Last nine game average: " + last_nine_average
         + "<br>Weighted average: " + Math.round(weighted_average_map[person.name])
         + "<br>Overall average: " + Math.round(average_map[person.name])
         + "<br>Average improvement per week: " + (Math.round(m_slope) || 0)
