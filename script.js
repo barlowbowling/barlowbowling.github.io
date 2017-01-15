@@ -192,14 +192,15 @@ $(function() {
         .attr("id", "averages_table")
         .append($("<tr>")
           .append($("<th>").text("Bowler"))
-          .append($("<th>").text("Average"))
+          .append($("<th>").text((sort_function=="varsity"||sort_function=="weighted"?"Weighted ":"")+"Average"))
         );
       for(var person in sorted_scores) {
         var person_row = $("<tr>")
-          .append($("<td>").text(sorted_scores[person].name
-            + (sort_function=="grade"?" ("+sorted_scores[person].grade+")":"")
-            + (sort_function=="varsity"&&sorted_scores[person].varsity?" (Varsity)":"")
-          ))
+          .append($("<td>")
+            .append($("<span>").text(sorted_scores[person].name).attr("class", "name_button"))
+            .append((sort_function=="grade"?" ("+sorted_scores[person].grade+")":"")
+              + (sort_function=="varsity"&&sorted_scores[person].varsity?" (Varsity)":""))
+          )
           .append($("<td>").text(
             sort_function == "weighted"
               ? Math.round(weighted_average_map[sorted_scores[person].name])
@@ -213,18 +214,19 @@ $(function() {
       }
     };
     var show_team_info = function() {
-      var name_elem = $("<h1>")
-        .text("Info");
-      var paragraph_elem_1 = $("<p>")
-        .text("Welcome to the Barlow Bowling data site! See the list below for resources.");
-      var resources_elem = $("<ul>")
-        .append($("<li>").html($("<a>").text("Nutmeg Bowl website").attr({href: "http://nutmegbowl.com",target: "_blank"})))
-        .append($("<li>").html($("<a>").text("Facebook group").attr({href: "http://facebook.com/groups/barlowbowling2017",target: "_blank"})))
-        .append($("<li>").html($("<a>").text("CIBL league standings").attr({href: "http://nutmegbowl.com/LEAGUES",target: "_blank"})));
-      $("#scores").empty()
-        .append(name_elem)
-        .append(paragraph_elem_1)
-        .append(resources_elem);
+      var info_page_elems = $(`
+        <h1>Info</h1>
+        <p>Welcome to the Barlow Bowling data site! Read the content below for more information.</p>
+        <h3>Varsity</h3>
+        <p>Varsity is primarily determiend by weighted average. Weighted average means that the games of each week are weighted ` + weight_scalar + ` times as much as the last week and provides a happy medium between total average (which not beneficial to the rapidly improving bowler) and the last match average (which is not beneficial to for a person with an unlucky last week). This system is especially geared towards taking recent improvement into account, as the most recent games are the most important to a bowler's average. A bowler must also have played over three games to be considered for varsity. Below are the most probably varsity bowlers, discounting injury or other inabilities to play:</p>
+        <h3>Resources</h3>
+        <ul>
+          <li><a href="http://nutmegbowl.com" target="_blank">Nutmeg Bowl website</a></li>
+          <li><a href="http://facebook.com/groups/barlowbowling2017" target="_blank">Facebook group</a></li>
+          <li><a href="http://nutmegbowl.com/LEAGUES" target="_blank">CIBL league standings</a></li>
+        </ul>
+      `);
+      $("#scores").empty().html(info_page_elems);
     }
     var show_team_details = function() {
       var name_elem = $("<h1>")
@@ -332,6 +334,10 @@ $(function() {
         }
       });
     };
+    // handler if clicked on person's name_button
+    $(document).on("click", ".name_button", function() {
+      $(".name_tab:contains(" + $(this).text() + ")").click();
+    });
     // handler if clicked on person's name_tab 
     $(".name_tab").click(function() {
       var old_scrolltop = $(window).scrollTop();
