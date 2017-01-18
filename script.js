@@ -31,6 +31,14 @@ $(function() {
     var weighted_average_map = {};
     var average_of_matches_map = {};
     var dates = [];
+    var varsity = { player1: -1, player2: -1, player3: -1, player4: -1, player5: -1 };
+    var varsity = [
+      { name: "player1", average: -1 },
+      { name: "player2", average: -1 },
+      { name: "player3", average: -1 },
+      { name: "player4", average: -1 },
+      { name: "player5", average: -1 }
+    ];
     for(var person in scores) {
       for(var match in scores[person].scores) {
         if(dates.indexOf(match) == -1) {
@@ -73,8 +81,30 @@ $(function() {
         }
       }
       average_map[scores[person].name] = overall_scores/overall_matches;
-            weighted_average_map[scores[person].name] = overall_weighted_score / weight_total;
+      weighted_average_map[scores[person].name] = overall_weighted_score / weight_total;
+      if(overall_matches <= 3) {
+        continue;
+      }
+      var lowest_varsity_average = varsity[0].average;
+      var lowest_varsity_player = 0;
+      for(var player in varsity) {
+        if(varsity[player].average < lowest_varsity_average) {
+          lowest_varsity_average = varsity[player].average;
+          lowest_varsity_player = player;
+        }
+      }
+      if(weighted_average_map[scores[person].name] > lowest_varsity_average) {
+        varsity.splice(lowest_varsity_player, 1,
+          {
+            average: weighted_average_map[scores[person].name],
+            name: scores[person].name
+          }
+        );
+      }
     }
+    varsity.sort(function(a, b) {
+      return b.average > a.average;
+    });
     $(window).resize();
     // calculating best fit line for overall and overall varsity
     var varsity_team_total = 0;
@@ -157,14 +187,7 @@ $(function() {
           });
           break;
         case "varsity":
-          sorted_scores = scores.slice().sort(function(a, b) {
-            if(a.varsity && b.varsity || !a.varsity && !b.varsity)
-              return 0;
-            if(a.varsity && !b.varsity)
-              return -1;
-            if(!a.varsity && b.varsity)
-              return 1;
-          });
+          sorted_scores = varsity;
           break;
         case "average":
           sorted_scores = scores.slice().sort(function(a, b) {
@@ -202,7 +225,7 @@ $(function() {
               + (sort_function=="varsity"&&sorted_scores[person].varsity?" (Varsity)":""))
           )
           .append($("<td>").text(
-            sort_function == "weighted"
+            sort_function == "weighted" || sort_function == "varsity"
               ? Math.round(weighted_average_map[sorted_scores[person].name])
               : Math.round(average_map[sorted_scores[person].name])
             ));
@@ -211,6 +234,8 @@ $(function() {
       $("#main").html(table_elem);
       if(sort_function == "weighted") {
         $("#main").append($("<p>").attr("id", "empty_disclaimer").html("&dagger; Each week's games are weighted " + weight_scalar + " times as much than the previous week."));
+      } else if(sort_function == "varsity") {
+        $("#main").append($("<p>").attr("id", "empty_disclaimer").html("&dagger; See the <span class='name_button'>Info</span> page for information on determining varsity. Varsity is automatically determined using the guidelines provided."));
       }
     };
     var show_team_info = function() {
@@ -218,7 +243,17 @@ $(function() {
         <h1>Info</h1>
         <p>Welcome to the Barlow Bowling data site! Read the content below for more information.</p>
         <h3>Varsity</h3>
-        <p>Varsity is primarily determiend by weighted average. Weighted average means that the games of each week are weighted ` + weight_scalar + ` times as much as the last week and provides a happy medium between total average (which not beneficial to the rapidly improving bowler) and the last match average (which is not beneficial to for a person with an unlucky last week). This system is especially geared towards taking recent improvement into account, as the most recent games are the most important to a bowler's average. A bowler must also have played over three games to be considered for varsity. Below are the most probably varsity bowlers, discounting injury or other inabilities to play:</p>
+        <p>Varsity is primarily determiend by weighted average. Weighted average means that the games of each week are weighted ` + weight_scalar + ` times as much as the last week and provides a happy medium between total average (which not beneficial to the rapidly improving bowler) and the last match average (which is not beneficial to for a person with an unlucky last week). This system is especially geared towards taking recent improvement into account, as the most recent games are the most important to a bowler's average. A bowler must also have played over three games to be considered for varsity. Below are the most varsity bowlers according to these guidelines.</p>
+        <table id="averages_table">
+          <thead>
+            <tr>
+              <th>Bowler</th>
+              <th>Weighted Average</th>
+            </tr>
+          </thead>
+          <tbody id="varsity_tbody_elem"><tr></tr></tbody>
+        </table>
+        <p id="empty_disclaimer">&dagger; Note that these varsity positions are automatically calculated and do not take into considerations any inabilities to play or emergencies that may occur.</p>
         <h3>Resources</h3>
         <ul>
           <li><a href="http://nutmegbowl.com" target="_blank">Nutmeg Bowl website</a></li>
@@ -227,6 +262,13 @@ $(function() {
         </ul>
       `);
       $("#scores").empty().html(info_page_elems);
+      for(var player in varsity) {
+        $("#varsity_tbody_elem").append(
+          $("<tr>")
+            .append($("<td>").html($("<span>").addClass("name_button").text(varsity[player].name)))
+            .append($("<td>").html(Math.round(varsity[player].average)))
+        );
+      }
     }
     var show_team_details = function() {
       var name_elem = $("<h1>")
