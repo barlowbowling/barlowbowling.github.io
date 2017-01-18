@@ -113,12 +113,16 @@ $(function() {
     var team_total = 0;
     var team_number = 0;
     var matches_total = 0;
+    var varsity_names = [];
+    for(var player in varsity) {
+      varsity_names.push(varsity[player].name);
+    }
     for(var player in average_of_matches_map) {
       for(var game in average_of_matches_map[player]) {
         var player_object = scores.find(function(a) {
           return a.name == player;
         });
-        if(player_object.varsity) {
+        if(varsity_names.indexOf(player_object.name) >= 0) {
           varsity_team_number++;  
           varsity_team_total += average_of_matches_map[player][game];
           varsity_matches_total += parseInt(game);
@@ -141,7 +145,7 @@ $(function() {
         var player_object = scores.find(function(a) {
           return a.name == player;
         });
-        if(player_object.varsity) {
+        if(varsity_names.indexOf(player_object.name) >= 0) {
           varsity_m_numerator += (parseInt(game) - varsity_matches_mean) * (average_of_matches_map[player][game] - varsity_team_mean);
           varsity_m_denominator += Math.pow(parseInt(game) - varsity_matches_mean, 2);
         }
@@ -168,7 +172,7 @@ $(function() {
         var person_object = scores.find(function(a) {
           return a.name == person;
         });
-        if(person_object.varsity) {
+        if(varsity_names.indexOf(person_object.name) >= 0) {
           varsity_number++;
           varsity_total += average_of_matches_map[person][dates.length-1];
         }
@@ -483,9 +487,16 @@ $(function() {
       for(var datapoint in Object.keys(person.scores)) {
         best_fit_data.push(b_intercept + m_slope * datapoint);
       }
+      var is_varsity = false;
+      for(var player in varsity) {
+        if(varsity[player].name == person.name) {
+          is_varsity = true;
+          break;
+        }
+      }
       var data_elem = $("<div>").html(
         "Grade: " + person.grade
-        + "<br>Varsity: " + (person.varsity?"yes":"no")
+        + "<br>Varsity: " + (is_varsity?"yes":"no")
         + "<br>Number of games: " + game_count
         + "<br>High game: " + high_game
         + "<br>Last match average: " + last_match_average
