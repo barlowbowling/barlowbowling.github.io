@@ -82,7 +82,7 @@ $(function() {
       }
       average_map[scores[person].name] = overall_scores/overall_matches;
       weighted_average_map[scores[person].name] = overall_weighted_score / weight_total;
-      if(overall_matches <= 3) {
+      if(overall_matches <= 6) {
         continue;
       }
       var lowest_varsity_average = varsity[0].average;
@@ -247,7 +247,7 @@ $(function() {
         <h1>Info</h1>
         <p>Welcome to the Barlow Bowling data site! Read the content below for more information.</p>
         <h3>Varsity</h3>
-        <p>Varsity is primarily determiend by weighted average. Weighted average means that the games of each week are weighted ` + weight_scalar + ` times as much as the last week and provides a happy medium between total average (which not beneficial to the rapidly improving bowler) and the last match average (which is not beneficial to for a person with an unlucky last week). This system is especially geared towards taking recent improvement into account, as the most recent games are the most important to a bowler's average. A bowler must also have played over three games to be considered for varsity. Below are the most varsity bowlers according to these guidelines.</p>
+        <p>Varsity is primarily determiend by weighted average. Weighted average means that the games of each week are weighted ` + weight_scalar + ` times as much as the last week and provides a happy medium between total average (which not beneficial to the rapidly improving bowler) and the last match average (which is not beneficial to for a person with an unlucky last week). This system is especially geared towards taking recent improvement into account, as the most recent games are the most important to a bowler's average. A bowler must also have played over six games (two full matches) to be considered for varsity. Below are the most varsity bowlers according to these guidelines.</p>
         <table id="averages_table">
           <thead>
             <tr>
