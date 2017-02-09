@@ -122,6 +122,7 @@ $(function() {
         var player_object = scores.find(function(a) {
           return a.name == player;
         });
+        if(average_of_matches_map[player][game] == null) continue;
         if(varsity_names.indexOf(player_object.name) >= 0) {
           varsity_team_number++;  
           varsity_team_total += average_of_matches_map[player][game];
@@ -145,6 +146,7 @@ $(function() {
         var player_object = scores.find(function(a) {
           return a.name == player;
         });
+        if(average_of_matches_map[player][game] == null) continue;
         if(varsity_names.indexOf(player_object.name) >= 0) {
           varsity_m_numerator += (parseInt(game) - varsity_matches_mean) * (average_of_matches_map[player][game] - varsity_team_mean);
           varsity_m_denominator += Math.pow(parseInt(game) - varsity_matches_mean, 2);
