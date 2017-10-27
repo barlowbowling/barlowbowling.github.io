@@ -278,7 +278,7 @@ $(function() {
       }
     }
     var show_team_details = function() {
-      var team_title_elem = $("<h1 id="header"><i class="fa fa-trophy"></i> JBHS CIBL Bowling Team</h1>");
+      var team_title_elem = $('<h1 id="header"><i class="fa fa-trophy"></i> JBHS CIBL Bowling Team</h1>');
       var name_elem = $("<h1>")
         .text("Team")
       var data_elem = $("<div>").html(
@@ -406,7 +406,7 @@ $(function() {
         return;
       }
       var person = scores[id];
-      var team_title_elem = $("<h1 id="header"><i class="fa fa-trophy"></i> JBHS CIBL Bowling Team</h1>");
+      var team_title_elem = $('<h1 id="header"><i class="fa fa-trophy"></i> JBHS CIBL Bowling Team</h1>');
       var name_elem = $("<h1>")
         .text(person.name);
       var disclaimer_elem = $("<p>")
