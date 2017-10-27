@@ -82,13 +82,11 @@ ul {
 }
 #header, #name_tabs, #scores {
   margin: 0;
-  padding: 20px;
 }
 #header {
   margin: 0;
   font-size: 50px;
   font-weight: normal;
-  text-align: center;
   user-select: none;
   cursor: default;
 }
