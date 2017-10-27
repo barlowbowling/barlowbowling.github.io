@@ -514,6 +514,7 @@ $(function() {
       var chart_elem = $("<canvas>")
         .attr("height", "250");
       $("#scores").empty()
+        .append(team_title_elem)
         .append(name_elem)
         .append(data_elem)
         .append(scores_elem)
