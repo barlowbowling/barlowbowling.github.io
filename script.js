@@ -246,6 +246,7 @@ $(function() {
     };
     var show_team_info = function() {
       var info_page_elems = $(`
+        <h1 id="header"><i class="fa fa-trophy"></i> JBHS CIBL Bowling Team</h1>
         <h1>Info</h1>
         <p>Welcome to the Barlow Bowling data site! Read the content below for more information.</p>
         <h3>Varsity</h3>
@@ -277,6 +278,7 @@ $(function() {
       }
     }
     var show_team_details = function() {
+      var team_title_elem = $("<h1 id="header"><i class="fa fa-trophy"></i> JBHS CIBL Bowling Team</h1>");
       var name_elem = $("<h1>")
         .text("Team")
       var data_elem = $("<div>").html(
@@ -300,6 +302,7 @@ $(function() {
       var canvas_elem = $("<canvas>").attr("height", 250);
       var options_title_elem = $("<h1>").text("Individual Overall Averages");
       $("#scores").empty()
+        .append(team_title_elem)
         .append(name_elem)
         .append(data_elem)
         .append(options_title_elem)
@@ -403,6 +406,7 @@ $(function() {
         return;
       }
       var person = scores[id];
+      var team_title_elem = $("<h1 id="header"><i class="fa fa-trophy"></i> JBHS CIBL Bowling Team</h1>");
       var name_elem = $("<h1>")
         .text(person.name);
       var disclaimer_elem = $("<p>")
